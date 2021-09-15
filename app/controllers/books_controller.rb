@@ -8,14 +8,16 @@ class BooksController < ApplicationController
 
   def create
     @book = Book.new(book_params)
+
     if @book.save
+    flash[:notice] = "Book was successfully created." #フラッシュ文リダイレクと前に
     redirect_to book_path(@book.id)
-  elde
-    render :new
+
+    else
+    @books = Book.all
+    render :index
+    end
   end
-end
-
-
 
   def show
     @book = Book.find(params[:id])
@@ -23,12 +25,19 @@ end
 
   def edit
     @book = Book.find(params[:id])
+
   end
 
   def update
     @book = Book.find(params[:id])
-    @book.update(book_params)
+   if @book.update(book_params) #updateの場合 @book.saveの考え　ここで分岐
+
+    flash[:notice] = "Book was successfully updated." #フラッシュ文リダイレクと前に
     redirect_to book_path(@book)
+    else
+    render :edit
+    end
+
   end
 
   def destroy
@@ -39,7 +48,7 @@ end
   end
 
 private
-def book_params
-  params.require(:book).permit(:title, :body)
-end
-end
+  def book_params
+    params.require(:book).permit(:title, :body)
+  end
+  end
